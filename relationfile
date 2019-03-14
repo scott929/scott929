@@ -1,0 +1,329 @@
+        /**警示*/
+        entity Alert {
+            name String required
+            level Integer
+            /** 从基类到这个的路径,包含本节点id */
+            path String required
+            deleted Boolean
+        }
+        /**点评内容*/
+        entity AlertRule {
+            name String required
+            /** 从基类到这个的路径 */
+            path String required
+            deleted Boolean
+        }
+        /**病原体*/
+        entity Bacterium {
+            name String required
+            deleted Boolean
+        }
+        entity BacteriumRelation{
+            parentId Long
+            depth Integer
+            deleted Boolean
+        }
+        /**药物类别*/
+        entity DrugCategory {
+            name String required
+            deleted Boolean
+        }
+        entity DrugCategoryRelation {
+            parentId Long
+            depth Integer
+            deleted Boolean
+        }
+        /**科室*/
+        entity Department {
+            name String required
+            deleted Boolean
+        }
+        /**疾病*/
+        entity Disease {
+            name String required
+            deleted Boolean
+        }
+        /**医生*/
+        entity Doctor {
+            name String required
+            deleted Boolean
+        }
+        /**成分类别*/
+        entity IngredientCategory {
+            name String required
+            deleted Boolean
+        }
+        /**药物*/
+        entity Drug {
+            name String required
+            /** 需要过敏皮试 */
+            allergy Boolean 
+            /** otc 处方药*/
+            otc Boolean 
+            /** 基础药物 */
+            basic Boolean 
+            /** 医保药 */
+            medicare Boolean 
+            /** 注射剂 */
+            inject Boolean
+            /** 抗菌药 */
+            antibiotic Boolean 
+            /** 特殊药物 */
+            special Integer
+            /** 描述 */
+            description String
+            drugClass DrugClass
+            deleted Boolean
+        }
+        /**医院药物*/
+        entity HosDrug {
+            name String required
+            dosage String
+            /** 规格 */
+            farmatStr String
+            /** 批准文号 */
+            approvalNumber String
+            /** 生产厂家 */
+            factory String
+            deleted Boolean
+        }
+        /**
+         * 药物类别
+         * 中药西药
+         */
+        enum DrugClass {
+            ZY, ZCY, XY
+        }
+        /**
+         * 处方类别
+         * 门诊急诊病房
+         * 麻醉毒性药品处方等等以前两个概念合成一个了
+         */
+        entity PreType {
+            name String required
+            deleted Boolean
+        }
+        /**成分*/
+        entity Ingredient {
+            name String required
+            deleted Boolean
+        }
+        /**剂型*/
+        entity Form {
+            name String required
+            deleted Boolean
+        }
+        /**药物成分关系*/
+        entity DrugIngredient {
+            /** 成分数目 */
+            ingredientNum Float
+            deleted Boolean
+        }
+        entity Unit {
+            name String required
+            type UnitType
+            deleted Boolean
+        }
+        entity HosUnit {
+            name String required
+            deleted Boolean
+        }
+        /**单位类型*/
+        enum UnitType {
+            AGE, TIME, WEIGHT, VOLUME // 体积
+        }
+        /**工厂*/
+        entity Factory {
+            name String required
+            deleted Boolean
+        }
+        /**过滤*/
+        entity FilterRule {
+            name String required
+            level Integer
+            ruleId String
+            preTypeId String
+            departmentId String
+            doctorId Integer
+            patientId Integer
+            basic Boolean
+            medicare Boolean
+            inject Boolean
+            special Boolean
+            antibiotic Boolean
+            drugIds String
+            description String
+            deleted Boolean
+        }
+        /**过滤记录*/
+        entity FilterHistory {
+            name String required
+            /** 点评数目 */
+            count Integer
+            deleted Boolean
+        }
+        entity IngredientCategoryRelation{
+            parentId Long
+            depth Integer
+            deleted Boolean
+        }
+        entity DiseaseRelation{
+            parentId Long
+            depth Integer
+            deleted Boolean
+        }
+        /**过滤记录处方*/
+        entity FilterHistoryPre 
+        entity Prescription{
+            isowner Boolean
+            diagnosis String
+            weight Float
+            level Integer
+            pregnancy Boolean
+            feeding Boolean
+            kidney Boolean
+            liver Boolean
+            status Integer
+            previewTime Instant
+            pharmviewTime Instant
+            docviewTime Instant
+            reviewTime Instant
+            description String
+            deleted Boolean
+        }
+        /**处方中所开药物*/
+        entity PrescriptionDrug
+        /**患者*/
+        entity Patient {
+            name String required
+            age Integer
+            weight Float
+            gender Integer
+            deleted Boolean
+        }
+        /** 用法用量*/
+        entity Dosage {
+            /** 用量 */
+            yl Float
+            type DosageType
+        }
+        /** 服药方式*/
+        entity DrugUsage {
+            name String required
+        }
+        /** 服药频率*/
+        entity Frequence {
+            cs Integer
+            fyjg Float
+            /** 频率代码,qd,bid*/
+            fdm String 
+            description String
+        }
+        /** 服药频率*/
+        entity HosFrequence {
+            name String
+        }
+        enum DosageType {
+            UPPER_LIMIT, FIRST, CHOICE, GROUP
+        }
+        entity Regulation{
+            /** 允许服用 */
+            allow Boolean
+            /** +25,25-60,-12 */
+            age String
+            indication String
+            contraindication String
+            otherDrug String 
+            otherDrugCategory String 
+            otherIngredient String 
+            otherIngredientCategory String 
+            otherBacterium String
+            /** 妊娠级别 */
+            pregnancyLevel Integer
+            /** 妊娠信息 */
+            pregnancyInfo String
+            /** 哺乳级别 */
+            feedingLevel Integer
+            /** 哺乳信息 */
+            feedingInfo String
+        }
+        enum AlertType {
+            BACTERIUM, DRUG_CATEGORY, INGREDIENT, DISEASE, DRUG, TIME, UNIT
+        }
+        enum Action {
+            INCREASE, DECREASE, PROHIBIT, TREAT, LINCREASE, RINCREASE, LDECREASE, RDECREASE
+        }
+        /**
+         * 药物报警
+         * 药物和病原体,成分,适应症,禁忌症,其它的药物,时间,用法用量之间的关系
+         */
+        entity DrugAlert {
+            /** 关系分类 */
+            action Action 
+            /** 关系类型 */
+            alertType AlertType 
+            description String
+        }
+        /**规格
+         * 数字-单位*数字-单位/单位    
+         */
+        entity Format {
+            num1 Float
+            operator OperatorType
+            num2 Float
+        }
+        enum OperatorType {
+            ADDITION, SUBTRACTION, MULTIPLICATION
+        }
+        /**药物和疾病的关系,只是针对这一个条件就用这个,如果不同的适应症有不同的用法用量就用regulation*/
+        relationship ManyToMany {
+            Alert to AlertRule
+            Ingredient to IngredientCategory
+            Drug to DrugCategory
+            FilterHistoryPre to Prescription
+        }
+        relationship OneToMany {
+            FilterHistory{prescriptions} to FilterHistoryPre
+            FilterRule{history} to FilterHistory
+            DrugCategory{relations} to DrugCategoryRelation
+            IngredientCategory{relations} to IngredientCategoryRelation
+            Disease{relations} to DiseaseRelation
+            Bacterium{relations} to BacteriumRelation
+            Prescription{drugs} to PrescriptionDrug
+            Drug to Dosage
+            Drug{ingredient} to DrugIngredient
+            Drug to Factory
+            Drug to Regulation
+            PrescriptionDrug to Dosage
+            Department{doctor} to Doctor
+            Regulation{dosage} to Dosage
+        }
+        relationship ManyToOne {
+            DrugIngredient{ingredientUnit(name)} to Unit
+            DrugIngredient{drugUnit(name)} to Unit
+            DrugIngredient{ingredient(name)} to Ingredient
+            DrugAlert{drugName} to Drug
+            DrugAlert to Alert
+            Drug to Form
+            Dosage{unit(name)} to Unit
+            Dosage to DrugUsage
+            Dosage to Frequence
+            /** 服药间隔,默认一天,天 */
+            Frequence{fyjgdw(name)} to Unit
+            PrescriptionDrug to HosDrug
+            Prescription{department} to Department
+            Prescription{pretype} to PreType
+            Prescription{doctor} to Doctor
+            Prescription{patient} to Patient
+            Format{unit1(name)} to Unit
+            Format{unit2(name)} to Unit
+            Format{perUnit(name)} to Unit
+            Patient{ageUnit(name)} to Unit
+            Patient{weightUnit(name)} to Unit
+        }
+        relationship OneToOne {
+            HosDrug to Drug
+            HosFrequence to Frequence
+            Drug to Format
+            HosUnit to Unit
+        }
