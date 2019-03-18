@@ -1,4 +1,14 @@
-        /**警示*/
+       application {
+          config {
+            baseName preview
+            packageName com.jinmed.preview
+            devDatabaseType mysql
+            cacheProvider ehcache
+            authenticationType jwt
+          }
+          entities *
+        }
+       /**警示*/
         entity Alert {
             name String required
             level Integer
